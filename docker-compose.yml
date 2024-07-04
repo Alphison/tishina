@@ -1,0 +1,43 @@
+name: tishina
+
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - "8080:80"
+    container_name: app_nginx  
+    depends_on:
+      - back 
+  back: 
+    build:
+      context: .
+      dockerfile: /back/_docker/app/Dockerfile
+    volumes: 
+      - .:/var/www    
+    depends_on:
+      - db  
+    container_name: back   
+  db: 
+    image: mysql:8.2
+    restart: always
+    volumes: 
+      - /back/tmp/db:/var/lib/mysql
+    environment: 
+        MYSQL_DATABASE: tishina
+        MYSQL_ROOT_PASSWORD: adminadmin
+    ports:
+      - 5000:3306
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    container_name: db  
+  front: 
+    build:
+      context: .   
+      dockerfile: /front/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - back
+    container_name: front    
