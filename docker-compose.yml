@@ -13,8 +13,7 @@ services:
       - back 
   back: 
     build:
-      context: .
-      dockerfile: /back/_docker/app/Dockerfile
+      context: /back/_docker/app
     volumes: 
       - .:/var/www    
     depends_on:
@@ -34,8 +33,7 @@ services:
     container_name: db  
   front: 
     build:
-      context: .   
-      dockerfile: /front/Dockerfile
+      context: /front   
     ports:
       - "3000:3000"
     depends_on:
